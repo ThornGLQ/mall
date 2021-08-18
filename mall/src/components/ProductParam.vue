@@ -51,6 +51,7 @@
     border-top: 1px solid $colorH;
     background-color: $colorG;
     box-shadow: 0 5px 5px $colorE;
+    z-index: 10;
     &.is_fixed{
       position: fixed;
       top: 0;
