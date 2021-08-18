@@ -3,7 +3,7 @@
     <div class="nav-topbar">
       <div class="container">
         <div class="topbar-menu">
-          <a href="javascript:;">小米商城</a>
+          <a href="/#/index">小米商城</a>
           <a href="javascript:;">MUI</a>
           <a href="javascript:;">云服务</a>
           <a href="javascript:;">协议规则</a>
@@ -12,7 +12,7 @@
           <a href="javascript:;" v-if="username">{{ username }}</a>
           <a href="javascript:;" v-if="!username" @click="login">登陆</a>
           <a href="javascript:;" v-if="username">我的订单</a>
-          <a href="javascript:;" class="my-cart" @click="goToCart"><span class="icon-cart"></span>购物车</a>
+          <a href="javascript:;" class="my-cart" @click="goToCart"><span class="icon-cart"></span>购物车{{cartCount}}</a>
         </div>
       </div>
     </div>
@@ -41,7 +41,7 @@
             </div>
           </div>
           <div class="item-menu">
-            <span>Redmi红米</span>
+            <span>RedMi红米</span>
 
           </div>
 <!--          电视菜单栏-->
@@ -123,8 +123,15 @@
     name:'nav-header',
     data(){
       return {
-        username:'',
         phoneList:[]
+      }
+    },
+    computed:{
+      username(){
+        return this.$store.state.userName;
+      },
+      cartCount(){
+        return this.$store.state.cartCount;
       }
     },
     filters:{
@@ -227,7 +234,7 @@
             font-weight: bold;
             font-size: 16px;
             line-height: 112px;
-            margin-right: 40px;
+            margin-right: 20px;
             span{
               cursor: pointer;
             }

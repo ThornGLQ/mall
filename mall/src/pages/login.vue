@@ -12,15 +12,15 @@
             <span>扫码登录</span>
           </div>
           <div class="input">
-            <input type="text" placeholder="请输入账号">
+            <input type="text" placeholder="请输入账号" v-model="username">
           </div>
           <div class="input">
-            <input type="password" placeholder="请输入密码">
+            <input type="password" placeholder="请输入密码" v-model="password">
           </div>
           <div class="submit">
-            <a href="javascript:;">登录</a>
+            <a href="javascript:;" @click="login">登录</a>
           </div>
-          <span class="sms">手机短信登录/注册</span>
+          <span class="sms" @click="register">手机短信登录/注册</span>
         </div>
       </div>
     </div>
@@ -41,9 +41,36 @@
 <script>
 
 export default {
-  name:'nav-login',
-  components:{
+  name:'login',
+  data(){
+    return{
+      username:'',
+      password:'',
+      userId:'',
 
+    }
+  },
+  methods:{
+    login(){
+      let username,password=this;
+      this.axios.post('/user/login',{
+        username,
+        password
+      }).then((res)=>{
+        this.$cookie.set('userId',res.id,{expires:'1M'});
+        this.$store.dispatch('saveUserName',res.username);
+        this.$router.push('/index');
+      })
+    },
+    register(){
+      this.axios.post('/user/register',{
+        username:'admin1',
+        password:'admin1',
+        email:'admin@163.com'
+      }).then(()=>{
+        alert('注册成功')
+      })
+    }
   }
 }
 </script>
@@ -60,7 +87,7 @@ export default {
     }
     .wrapper{
       height: 576px;
-      background: url(/imgs/login-bg.jpg) no-repeat 50%;
+      background: url("/imgs/login-bg.jpg") no-repeat 50%;
       .login-form{
         box-sizing: border-box;
         text-align: center;
@@ -90,6 +117,7 @@ export default {
           input{
             padding-left: 18px;
             width: 330px;
+            box-sizing: border-box;
           }
         }
         .submit{

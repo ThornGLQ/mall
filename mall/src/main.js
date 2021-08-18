@@ -2,6 +2,8 @@ import Vue from 'vue'
 import router from './router'
 import axios from 'axios';
 import VueAxios from 'vue-axios'
+import VueCookie from 'vue-cookie'
+import store from './store'
 import App from './App.vue'
 // import env from './env'
 //mock开关
@@ -19,16 +21,21 @@ axios.interceptors.response.use(function(response){
   if(res.status==0){
     return res.data;
   }else if(res.status==10){
-    window.location.href='/#/login'
+    window.location.href='/#/login';
   }else{
+
     alert(res.msg);
+    return Promise.reject(res);
   }
 });
 
 Vue.use(VueAxios,axios);
+Vue.use(VueCookie);
+
 Vue.config.productionTip = false
 
 new Vue({
+  store,
   router:router,
   render: h => h(App),
 }).$mount('#app')
