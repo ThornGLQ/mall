@@ -1,6 +1,10 @@
 <template>
   <div class="product">
-    <product-param v-bind:title="product.name"></product-param>
+    <product-param v-bind:title="product.name">
+      <template v-slot:buy>
+        <button class="btn" @click="buy">立即购买</button>
+      </template>
+    </product-param>
     <div class="content">
       <div class="item-bg-1">
         <h2>{{product.name}}</h2>
@@ -86,6 +90,10 @@
         this.axios.get('/products/'+id).then((res)=>{
           this.product =res;
         })
+      },
+      buy(){
+        let id =this.$route.params.id;
+        this.$router.push('/detail/'+id)
       }
     }
   }
@@ -94,6 +102,7 @@
 @import "./../assets/scss/config.scss";
 @import "./../assets/scss/mixin.scss";
   .product{
+
     .h{
       height: 150px;
     }

@@ -8,7 +8,7 @@
         <a href="javascript:;">概述</a><span>|</span>
         <a href="javascript:;">参数</a><span>|</span>
         <a href="javascript:;">用户评价</a>
-        <button class="btn" @click="buy">立即购买</button>
+        <slot name="buy"></slot>
       </div>
     </div>
   </div>
@@ -31,11 +31,8 @@
       initHeight(){
         let scrollTop=window.pageYOffset||document.documentElement.scrollTop||document.body.scrollTop;
         this.isFixed=scrollTop>152?true:false;
-      },
-      buy(){
-        let id =this.$route.params.id;
-        this.$router.push('/detail/'+id)
       }
+
     },
     destroyed() {
       window.removeEventListener('scroll',this.initHeight,false)
@@ -50,12 +47,12 @@
     line-height: 70px;
     border-top: 1px solid $colorH;
     background-color: $colorG;
-    box-shadow: 0 5px 5px $colorE;
     z-index: 10;
     &.is_fixed{
       position: fixed;
       top: 0;
       width: 100%;
+      box-shadow: 0 5px 5px $colorE;
     }
     .container{
       @include flex();
