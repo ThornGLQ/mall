@@ -2,10 +2,10 @@
 * 商城Vuex-mutations
 * */
 export default {
-    saveUserName(state,userName){
-        state.userName=userName;
+    saveUserName(state, username) {
+        state.username = username;
     },
-    saveCartCount(state,count){
-        state.cartCount=count;
+    saveCartCount(state, count) {
+        state.cartCount = count;
     }
 }

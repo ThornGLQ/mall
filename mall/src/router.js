@@ -36,6 +36,10 @@ export default new Router({
         ]
 
     },{
+        path:'/login',
+        name:'login',
+        component: Login,
+    },{
         path:'/cart',
         name:'cart',
         component:Cart
@@ -61,10 +65,6 @@ export default new Router({
             component: AliPay
         }
         ]
-    },{
-        path:'/login',
-        name:'login',
-        component: Login,
     }
     ]
 });

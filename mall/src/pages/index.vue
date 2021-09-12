@@ -99,6 +99,7 @@
 import ServiceBar from './../components/ServiceBar';
 import 'swiper/swiper.scss';
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
+
 export default {
   name:'nav-index',
   components:{

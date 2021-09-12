@@ -11,16 +11,18 @@
         <div class="topbar-user">
           <a href="javascript:;" v-if="username">{{ username }}</a>
           <a href="javascript:;" v-if="!username" @click="login">登陆</a>
+          <a href="javascript:;" v-if="username"  @click="logout">退出</a>
           <a href="javascript:;" v-if="username">我的订单</a>
-          <a href="javascript:;" class="my-cart" @click="goToCart"><span class="icon-cart"></span>购物车{{cartCount}}</a>
+          <a href="javascript:;" class="my-cart" @click="goToCart"><span class="icon-cart"></span>购物车({{cartCount}})</a>
         </div>
       </div>
     </div>
     <div class="nav-header">
       <div class="container">
-        <div class="header-logo">
-          <a href="/#/index"></a>
-        </div>
+<!--        <div class="header-logo">-->
+<!--          <a href="/#/index"></a>-->
+<!--        </div>-->
+        <header-logo></header-logo>
         <div class="header-menu">
 <!--          小米手机菜单栏-->
           <div class="item-menu">
@@ -119,8 +121,10 @@
   </div>
 </template>
 <script>
+  import HeaderLogo from "@/components/HeaderLogo";
   export default {
     name:'nav-header',
+    components: {HeaderLogo},
     data(){
       return {
         phoneList:[]
@@ -128,7 +132,7 @@
     },
     computed:{
       username(){
-        return this.$store.state.userName;
+        return this.$store.state.username;
       },
       cartCount(){
         return this.$store.state.cartCount;
@@ -141,11 +145,23 @@
       }
     },
     mounted() {
+      let params=this.$route.params;
       this.getProductList();
+      if(params && params.from=='login'){
+        this.getCartCount();
+      }
     },
     methods:{
       login(){
         this.$router.push('/login');
+      },
+      logout(){
+        this.axios.post('user/logout').then(()=>{
+          alert('退出成功');
+          this.$cookie.set('userId','', {expires:'-1'});
+          this.$store.dispatch('saveUserName','');
+          this.$store.dispatch('saveCartCount','0');
+        })
       },
       getProductList(){
         this.axios.get('/products',{
@@ -157,6 +173,11 @@
           if(res.list.length>=6){
             this.phoneList=res.list.slice(0,6);
           }
+        })
+      },
+      getCartCount(){
+        this.axios.get('/carts/products/sum').then((res=0)=>{
+          this.$store.dispatch('saveCartCount',res);
         })
       },
       goToCart(){
@@ -200,30 +221,6 @@
         position: relative;
         height: 112px;
         @include flex();
-        .header-logo{
-          display: inline-block;
-          width: 55px;
-          height: 55px;
-          background-color: #FF6600;
-          a{
-            display: inline-block;
-            width: 110px;
-            height: 55px;
-            &:before{
-              content: " ";
-              @include bgImg(55px,55px,"/imgs/mi-logo.png",55px);
-              transition: margin .2s;
-            }
-            &:after{
-              content: " ";
-              @include bgImg(55px,55px,"/imgs/mi-home.png",55px);
-            }
-            &:hover:before{
-              margin-left: -55px;
-              transition: margin .2s;
-            }
-          }
-        }
         .header-menu{
           display: inline-block;
           padding-left: 209px;

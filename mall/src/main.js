@@ -3,11 +3,12 @@ import router from './router'
 import axios from 'axios';
 import VueAxios from 'vue-axios'
 import VueCookie from 'vue-cookie'
-import store from './store'
+import store from './store/index'
 import App from './App.vue'
+
 // import env from './env'
 //mock开关
-const mock=true;
+const mock=false;
 if(mock){
   require('./mock/api');
 }
@@ -22,7 +23,7 @@ axios.interceptors.response.use(function(response){
   if(res.status==0){
     return res.data;
   }else if(res.status==10){
-    if(path!='#/index'){
+    if(path !='#/index'){
       window.location.href='/#/login';
     }
     return Promise.reject(res);
@@ -31,6 +32,10 @@ axios.interceptors.response.use(function(response){
     alert(res.msg);
     return Promise.reject(res);
   }
+},(error)=>{
+  let res = error.response;
+  alert(res.data.message);
+  return Promise.reject(error);
 });
 
 Vue.use(VueAxios,axios);

@@ -39,7 +39,10 @@
   </div>
 </template>
 <script>
-
+// import Vue from 'vue';
+// import VueCookie from 'vue-cookie';
+import {mapActions} from "vuex";
+// Vue.use(VueCookie);
 export default {
   name:'login',
   data(){
@@ -47,27 +50,52 @@ export default {
       username:'',
       password:'',
       userId:'',
-
+      res:{}
     }
+  },
+  mounted() {
+
   },
   methods:{
     login(){
-      let username,password=this;
+      let { username,password } = this;
       this.axios.post('/user/login',{
         username,
         password
       }).then((res)=>{
-        this.$cookie.set('userId',res.id,{expires:'1M'});
-        this.$store.dispatch('saveUserName',res.username);
-        this.$router.push('/index');
+        this.$cookie.set('userId',res.id,{expires:'Session'});
+        // this.$store.dispatch('saveUserName',res.username);
+        this.saveUserName(res.username);
+        this.res=res;
+        this.$router.push({
+          name:'index',
+          params:{
+            from:'login'
+          }
+        });
       })
     },
+    ...mapActions(['saveUserName']),
+
+    // login(){
+    //   let username=this.username;
+    //   let password=this.password;
+    //   this.axios.post('/user/login',{
+    //     username:username,
+    //     password:password
+    //   }).then((res)=>{
+    //     this.res=res;
+    //     this.$router.push('/index');
+    //   })
+    // },
     register(){
       this.axios.post('/user/register',{
-        username:'admin1',
-        password:'admin1',
-        email:'admin@163.com'
-      }).then(()=>{
+        username:'glq',
+        password:'glq',
+        email:'glq@163.com'
+      }).then((res)=>{
+        this.res=res
+        alert(res);
         alert('注册成功')
       })
     }
