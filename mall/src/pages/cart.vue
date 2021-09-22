@@ -25,7 +25,7 @@
                 <span class="checkbox" :class="{'checked':item.productSelected}" @click="updateCart(item)"></span>
               </div>
               <div class="item-name">
-                <img :src="item.productMainImage" alt="">
+                <img v-lazy="item.productMainImage" alt="">
                 <span>{{ item.productName +','+item.productSubtitle}}</span>
               </div>
               <div class="item-price">{{item.productPrice}}</div>
@@ -37,12 +37,19 @@
                 </div>
               </div>
               <div class="item-total">{{ item.productTotalPrice }}</div>
-              <div class="item-del" @click="delProduct"></div>
+              <div class="item-del" @click="delProduct(item)"></div>
             </li>
           </ul>
         </div>
         <div class="order-wrap">
-
+          <div class="cart-tip fl">
+            <a href="/#/index">继续购物</a>
+            共<span>{{list.length}}</span>件商品，已选择<span>{{checkedNum}}</span>件
+          </div>
+          <div class="total fr">
+            合计：<span>{{cartTotalPrice}}</span>元
+            <a href="javascript:;" class="btn" @click="goToConfirm">去结算</a>
+          </div>
         </div>
       </div>
     </div>
@@ -103,7 +110,7 @@ export default {
       }else {
         selected = !item.productSelected;
       }
-      this.axios.get('/carts/'+item.productId,{
+      this.axios.put('/carts/'+item.productId,{
         quantity,
         selected
       }).then((res)=>{
@@ -118,7 +125,14 @@ export default {
       })
     },
     toggleAll(){
-
+      let url = this.allChecked?'/carts/unSelectAll':'/carts/selectAll';
+      this.axios.put(url).then((res)=>{
+        this.renderData(res);
+      })
+    },
+    goToConfirm(){
+      this.getCartList();
+      this.$router.push('/order/confirm');
     },
     renderData(res){
       this.list = res.cartProductVoList || [];
@@ -151,7 +165,7 @@ export default {
           margin-right: 17px;
           cursor:pointer;
         }
-        &.checked{
+        .checked{
           background: url("/imgs/icon-gou.png")$colorA no-repeat center;
           background-size: 16px 12px;
           border:none;
@@ -227,9 +241,46 @@ export default {
             .item-del{
               @include bgImg(12px,12px,'/imgs/icon-close.png');
               flex: 1;
+              cursor: pointer;
+              &:hover{
+                transform: scale(1.2);
+
+              }
             }
           }
 
+        }
+      }
+      .order-wrap{
+        font-size: 16px;
+        height: 50px;
+        line-height: 50px;
+        color: #666666;
+        margin-top: 20px;
+        .cart-tip{
+          margin-left: 30px;
+          a{
+            margin-right: 40px;
+          }
+          span{
+            color: $colorA;
+            margin: 0 5px;
+          }
+        }
+        .total{
+          font-size: 14px;
+          color: $colorA;
+          span{
+            font-size: 24px;
+          }
+          a{
+            width: 200px;
+            height: 50px;
+            line-height: 50px;
+            margin-left: 38px;
+            font-size: 18px;
+            color: #ffffff;
+          }
         }
       }
     }

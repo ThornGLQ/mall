@@ -1,8 +1,19 @@
+@import "config";
 .container{
   width: 1226px;
   margin-right: auto;
   margin-left: auto;
   position: relative;
+}
+.btn{
+  display: inline-block;
+  width:110px;
+  line-height: 30px;
+  text-align: center;
+  background-color: $colorA;
+  color:$colorG;
+  border:none;
+  cursor: pointer;
 }
 a{
   img{
@@ -20,4 +31,11 @@ input{
 }
 .fr{
   float: right;
+}
+.clearfix:before,.clearfix:after{
+  content:' ';
+  display:table;
+}
+.clearfix:after{
+  clear: both;
 }

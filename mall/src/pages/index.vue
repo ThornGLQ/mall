@@ -19,31 +19,31 @@
             </li>
             <li class="menu-item">
               <a href="javascript:;">电视 盒子</a>
-              <div class="children"></div>
+<!--              <div class="children"></div>-->
             </li>
             <li class="menu-item">
               <a href="javascript:;">笔记本 平板</a>
-              <div class="children"></div>
+<!--              <div class="children"></div>-->
             </li>
             <li class="menu-item">
               <a href="javascript:;">家电 插线板</a>
-              <div class="children"></div>
+<!--              <div class="children"></div>-->
             </li>
             <li class="menu-item">
               <a href="javascript:;">出行 穿戴</a>
-              <div class="children"></div>
+<!--              <div class="children"></div>-->
             </li>
             <li class="menu-item">
               <a href="javascript:;">智能 路由器</a>
-              <div class="children"></div>
+<!--              <div class="children"></div>-->
             </li>
             <li class="menu-item">
               <a href="javascript:;">电源 配件</a>
-              <div class="children"></div>
+<!--              <div class="children"></div>-->
             </li>
             <li class="menu-item">
               <a href="javascript:;">生活 箱包</a>
-              <div class="children"></div>
+<!--              <div class="children"></div>-->
             </li>
           </ul>
         </div>
@@ -52,17 +52,17 @@
             <a v-bind:href="'/#/product/'+item.id"><img v-bind:src="item.img"></a>
           </swiper-slide>
           <div class="swiper-pagination" slot="pagination"></div>
-          <div class="swiper-button-prev"></div>
-          <div class="swiper-button-next"></div>
+          <div class="swiper-button-prev" slot="button-prev"></div>
+          <div class="swiper-button-next" slot="button-next"></div>
         </swiper>
       </div>
       <div class="ads-box">
         <a :href="'/#/product/'+item.id" v-for="(item,index) in adsList " :key="index">
-          <img :src="item.img" alt="">
+          <img v-lazy="item.img" alt="">
         </a>
       </div>
       <div class="banner">
-        <a href="/#/product/30"><img src="/imgs/banner-1.png" alt=""></a>
+        <a href="/#/product/30"><img v-lazy="'/imgs/banner-1.png'" alt=""></a>
       </div>
     </div>
     <div class="product-box">
@@ -71,7 +71,7 @@
         <div class="wrapper">
           <div class="banner-left">
             <a href="/#/product/35">
-              <img src="/imgs/mix-alpha.jpg" alt="">
+              <img v-lazy="'/imgs/mix-alpha.jpg'" alt="">
             </a>
           </div>
           <div class="list-box">
@@ -79,12 +79,12 @@
               <div class="item" v-for="(item,j) in arr " :key="j">
                 <span v-bind:class="{'new-pro':j%2==0}">新品</span>
                 <div class="item-img">
-                  <img v-bind:src="item.mainImage" alt="">
+                  <img v-lazy="item.mainImage" alt="">
                 </div>
                 <div class="item-info">
                   <h3>{{ item.name }}</h3>
                   <p>{{ item.subtitle }}</p>
-                  <p class="price">{{ item.price }}元</p>
+                  <p class="price" @click="addCart(item.id)">{{ item.price }}元</p>
                 </div>
               </div>
             </div>
@@ -93,18 +93,32 @@
       </div>
     </div>
     <ServiceBar></ServiceBar>
+    <modal :show-modal="showModal"
+           title="提示"
+           sureText="查看购物车"
+           btn-type="1"
+           @submit="goToCart"
+           @cancel="showModal=false"
+    >
+      <template v-slot:body>
+        <p>商品添加成功</p>
+      </template>
+    </modal>
   </div>
 </template>
 <script>
 import ServiceBar from './../components/ServiceBar';
-import 'swiper/swiper.scss';
-import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
-
+import { swiper, swiperSlide } from 'vue-awesome-swiper'
+import 'swiper/dist/css/swiper.css'
+import Modal from "@/components/Modal";
+// import { Swiper, SwiperSlide } from 'swiper/vue';
+// import 'swiper/css';
 export default {
   name:'nav-index',
   components:{
-    Swiper,
-    SwiperSlide,
+    Modal,
+    swiper,
+    swiperSlide,
     ServiceBar
   },
   data(){
@@ -118,31 +132,32 @@ export default {
           shadow: true,
           shadowOffset: 100,
           shadowScale: 0.6
+        },
+        pagination:{
+          el:'.swiper-pagination',
+          clickable:true,
+        },
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
         }
       },
-      pagination:{
-        el:'.swiper-pagination',
-        clickable:true,
-      },
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
+
       slideList:[{
           id:'42',
           img:'/imgs/slider/slide-1.jpg'
         }, {
-          id:'46',
+          id:'45',
           img:'/imgs/slider/slide-2.jpg'
         }, {
-          id:'',
+          id:'46',
           img:'/imgs/slider/slide-3.jpg'
         }, {
           id:'',
           img:'/imgs/slider/slide-4.jpg'
         }, {
           id:'',
-          img:'/imgs/slider/slide-5.jpg'
+          img:'/imgs/slider/slide-1.jpg'
         }
       ],
       menuList:[
@@ -180,7 +195,9 @@ export default {
           img:'/imgs/ads/ads-4.jpg'
         }
       ],
-      phoneList:[]
+      phoneList:[],
+      showModal:false
+
     }
   },
   mounted() {
@@ -197,6 +214,18 @@ export default {
         res.list=res.list.slice(6,14);
         this.phoneList=[res.list.slice(0,4),res.list.slice(4,8)];
       })
+    },
+    addCart(id) {
+      this.axios.post('/carts',{
+        productId:id,
+        selected: true
+      }).then((res)=>{
+        this.$store.dispatch('saveCartCount',res.cartTotalQuantity);
+        this.showModal=true;
+      })
+    },
+    goToCart() {
+      this.$router.push('/cart');
     }
   }
 }

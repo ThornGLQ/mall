@@ -64,7 +64,8 @@
 <script>
   import ProductParam from './../components/ProductParam';
   import ServiceBar from "@/components/ServiceBar";
-  import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
+  import { swiper, swiperSlide } from 'vue-awesome-swiper';
+  import 'swiper/dist/css/swiper.css'
 
 export default {
 
@@ -79,6 +80,7 @@ export default {
       swiperOption:{
         pagination: {
           el: '.swiper-pagination',
+          clickable:true,
         },
       }
     }
@@ -105,8 +107,8 @@ export default {
   components:{
     ServiceBar,
     ProductParam,
-    Swiper,
-    SwiperSlide,
+    swiper,
+    swiperSlide,
   }
 
 }

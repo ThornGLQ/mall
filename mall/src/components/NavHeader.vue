@@ -12,16 +12,14 @@
           <a href="javascript:;" v-if="username">{{ username }}</a>
           <a href="javascript:;" v-if="!username" @click="login">登陆</a>
           <a href="javascript:;" v-if="username"  @click="logout">退出</a>
-          <a href="javascript:;" v-if="username">我的订单</a>
+          <a href="javascript:;" v-if="username" @click="myOrder">我的订单</a>
           <a href="javascript:;" class="my-cart" @click="goToCart"><span class="icon-cart"></span>购物车({{cartCount}})</a>
         </div>
       </div>
     </div>
     <div class="nav-header">
       <div class="container">
-<!--        <div class="header-logo">-->
-<!--          <a href="/#/index"></a>-->
-<!--        </div>-->
+
         <header-logo></header-logo>
         <div class="header-menu">
 <!--          小米手机菜单栏-->
@@ -32,7 +30,7 @@
                 <li class="product" v-for="(item,index) in phoneList" :key="index">
                   <a v-bind:href="'/#/product/'+item.id" target="_blank">
                     <div class="pro-img">
-                      <img :src="item.mainImage" :alt="item.subtitle"/>
+                      <img v-lazy="item.mainImage" :alt="item.subtitle"/>
                     </div>
                     <div class="pro-name">{{item.name}}</div>
                     <div class="pro-price">{{item.price | currency}}</div>
@@ -54,7 +52,7 @@
                 <li class="product">
                   <a href="" target="_blank">
                     <div class="pro-img">
-                      <img src="/imgs/nav-img/nav-3-1.jpg" height="220" width="320"/>
+                      <img v-lazy="'/imgs/nav-img/nav-3-1.jpg'" height="220" width="320"/>
                     </div>
                     <div class="pro-name">小米壁画电视 65英寸</div>
                     <div class="pro-price">6999元</div>
@@ -63,7 +61,7 @@
                 <li class="product">
                   <a href="" target="_blank">
                     <div class="pro-img">
-                      <img src="/imgs/nav-img/nav-3-2.jpg" height="220" width="320"/>
+                      <img v-lazy="'/imgs/nav-img/nav-3-2.jpg'" height="220" width="320"/>
                     </div>
                     <div class="pro-name">小米全面屏电视E55A</div>
                     <div class="pro-price">1999元</div>
@@ -72,7 +70,7 @@
                 <li class="product">
                   <a href="" target="_blank">
                     <div class="pro-img">
-                      <img src="/imgs/nav-img/nav-3-3.png" height="220" width="320"/>
+                      <img v-lazy="'/imgs/nav-img/nav-3-3.png'" height="220" width="320"/>
                     </div>
                     <div class="pro-name">小米电视4A 32英寸</div>
                     <div class="pro-price">699元</div>
@@ -81,7 +79,7 @@
                 <li class="product">
                   <a href="" target="_blank">
                     <div class="pro-img">
-                      <img src="/imgs/nav-img/nav-3-4.jpg" height="220" width="320"/>
+                      <img v-lazy="'/imgs/nav-img/nav-3-4.jpg'" height="220" width="320"/>
                     </div>
                     <div class="pro-name">小米电视4A 55英寸</div>
                     <div class="pro-price">1799元</div>
@@ -90,7 +88,7 @@
                 <li class="product">
                   <a href="" target="_blank">
                     <div class="pro-img">
-                      <img src="/imgs/nav-img/nav-3-5.jpg" height="220" width="320"/>
+                      <img v-lazy="'/imgs/nav-img/nav-3-5.jpg'" height="220" width="320"/>
                     </div>
                     <div class="pro-name">小米电视4A 65英寸</div>
                     <div class="pro-price">2699元</div>
@@ -99,7 +97,7 @@
                 <li class="product">
                   <a href="" target="_blank">
                     <div class="pro-img">
-                      <img src="/imgs/nav-img/nav-3-6.png" height="220" width="320"/>
+                      <img v-lazy="'/imgs/nav-img/nav-3-6.png'" height="220" width="320"/>
                     </div>
                     <div class="pro-name">查看全部</div>
                     <div class="pro-price">小米电视</div>
@@ -122,6 +120,7 @@
 </template>
 <script>
   import HeaderLogo from "@/components/HeaderLogo";
+  // import {mapState} from 'vuex'
   export default {
     name:'nav-header',
     components: {HeaderLogo},
@@ -137,6 +136,7 @@
       cartCount(){
         return this.$store.state.cartCount;
       }
+      // ...mapState(['username','cartCount'])
     },
     filters:{
       currency(val){
@@ -182,6 +182,9 @@
       },
       goToCart(){
         this.$router.push('/cart');
+      },
+      myOrder(){
+        this.$router.push('/order/list');
       }
     }
 
@@ -240,21 +243,21 @@
               .children{
                 height: 220px;
                 opacity: 1;
-                z-index: 10;
               }
-
             }
             .children{
               position: absolute;
               top: 112px;
               left: 0;
               height: 0px;
+              width: 1226px;
               opacity: 0;
               overflow: hidden;
               width: 1226px;
               border-top:1px solid #e5e5e5;
               box-shadow: 0px 7px 6px 0px rgba(0,0,0,0.11);
-              transition: height .5s;
+              z-index: 10;
+              transition: all .5s;
               background-color: #ffffff;
 
               .product{

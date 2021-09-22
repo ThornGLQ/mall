@@ -24,8 +24,8 @@ export default {
   },
   methods:{
     getUser(){
-      this.axios.get('/user/login').then((res={})=>{
-        this.$store.dispatch('saveUserName',res.username)
+      this.axios.get('/user').then((res={})=>{
+        this.$store.dispatch('saveUserName',res.username);
       })
     },
     getCartCount(){
